@@ -44,20 +44,21 @@ class QuizGame {
   }
 
   String get getQuestion {
-    if (_unansweredQuestionsIndexes.isEmpty) {
+    if (isLastQuestion) {
+      _unansweredQuestionsIndexes
+          .clear(); // Clear the list when reaching the last question
       return 'Quiz finished.';
     }
 
-    _randomIndex =
-        _unansweredQuestionsIndexes.removeAt(0); // Remove the first index
+    _randomIndex = _unansweredQuestionsIndexes[
+        0]; // Get the first index without removing it
+
+    _unansweredQuestionsIndexes.removeAt(0);
 
     return _questions[_randomIndex].question;
   }
 
   bool get getQuestionAnswer {
-    if (isLastQuestion) {
-      return false;
-    }
     return _questions[_randomIndex].answer;
   }
 

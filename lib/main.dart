@@ -74,7 +74,15 @@ class _QuizPageState extends State<QuizPage> {
           ],
         );
       },
-    );
+    ).then((_) {
+      // Reset the game by creating a new instance of QuizGame
+      quiz = QuizGame();
+      scoreIcons.clear(); // Clear the score icons
+
+      setState(() {
+        correctAnswersCount = 0; // Reset the correct answers count
+      });
+    });
   }
 
   @override
