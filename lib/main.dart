@@ -116,13 +116,25 @@ class _QuizPageState extends State<QuizPage> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Center(
-              child: Text(
-                quiz.getQuestion,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 25.0,
-                  color: Colors.white,
-                ),
+              child: FutureBuilder<String>(
+                future: quiz.getQuestion(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return const Text('Error fetching question.');
+                  } else {
+                    return Text(
+                      snapshot.data!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 25.0,
+                        color: Colors.white,
+                      ),
+                    );
+                  }
+                },
               ),
             ),
           ),
