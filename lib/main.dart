@@ -36,6 +36,7 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   int correctAnswersCount = 0;
+  bool isLoaded = false;
 
   void checkAnswer(bool userAnswer) {
     bool answerIsCorrect = quiz.getQuestionAnswer == userAnswer;
@@ -86,6 +87,20 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    initializeData();
+  }
+
+  void initializeData() async {
+    quiz.initialize().then((value) {
+      setState(() {
+        isLoaded = true;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,26 +131,16 @@ class _QuizPageState extends State<QuizPage> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Center(
-              child: FutureBuilder<String>(
-                future: quiz.getQuestion(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return const Text('Error fetching question.');
-                  } else {
-                    return Text(
-                      snapshot.data!,
+              child: isLoaded
+                  ? Text(
+                      quiz.getQuestion(),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 25.0,
                         color: Colors.white,
                       ),
-                    );
-                  }
-                },
-              ),
+                    )
+                  : const CircularProgressIndicator(),
             ),
           ),
         ),
