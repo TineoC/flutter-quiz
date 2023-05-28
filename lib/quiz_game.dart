@@ -28,6 +28,7 @@ class QuizGame {
       // Error handling
       print('Request failed with status: ${response.statusCode}.');
     }
+    print(response);
 
     // Successful API call
     final responseData = json.decode(response.body);
@@ -52,8 +53,7 @@ class QuizGame {
     await fetchData();
   }
 
-  Future<String> getQuestion() async {
-    await initialize();
+  String getQuestion() {
     String question = _questions[_questionIndex].question;
     _questionIndex += 1;
     return question;
