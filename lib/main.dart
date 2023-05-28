@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizz/quiz_game.dart';
 
-QuizGame quiz = QuizGame();
-
 List<Widget> scoreIcons = [];
 
 void main() => runApp(const Quizzler());
@@ -38,18 +36,39 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   int correctAnswersCount = 0;
   bool isLoaded = false;
+  late QuizGame quiz;
 
-  void resetGame() {
-    setState(() {
-      correctAnswersCount = 0; // Reset the correct answers count
-    });
+  @override
+  void initState() {
+    super.initState();
+
+    initializeQuiz();
+  }
+
+  void initializeQuiz() {
+    quiz = QuizGame();
 
     quiz.initialize().then((value) {
       setState(() {
         isLoaded = true;
-        scoreIcons.clear();
       });
     });
+  }
+
+  void resetGame() {
+    setState(() {
+      correctAnswersCount = 0;
+      scoreIcons.clear();
+      isLoaded = false;
+    });
+
+    initializeQuiz();
+  }
+
+  void onOkPressed() {
+    resetGame();
+    initializeQuiz();
+    Navigator.of(context).pop(); // Close the AlertDialog
   }
 
   void checkAnswer(bool userAnswer) {
@@ -81,26 +100,13 @@ class _QuizPageState extends State<QuizPage> {
               Text('You answered $correctAnswersCount questions correctly.'),
           actions: <Widget>[
             TextButton(
+              onPressed: onOkPressed,
               child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                resetGame(); // Reset the game
-              },
             ),
           ],
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    quiz.initialize().then((value) {
-      setState(() {
-        isLoaded = true;
-      });
-    });
   }
 
   @override
