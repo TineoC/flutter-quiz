@@ -31,6 +31,7 @@ class QuizPage extends StatefulWidget {
   const QuizPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _QuizPageState createState() => _QuizPageState();
 }
 
@@ -38,6 +39,18 @@ class _QuizPageState extends State<QuizPage> {
   int correctAnswersCount = 0;
   bool isLoaded = false;
 
+  void resetGame() {
+    setState(() {
+      correctAnswersCount = 0; // Reset the correct answers count
+    });
+
+    quiz.initialize().then((value) {
+      setState(() {
+        isLoaded = true;
+        scoreIcons.clear();
+      });
+    });
+  }
   void checkAnswer(bool userAnswer) {
     bool answerIsCorrect = quiz.getQuestionAnswer == userAnswer;
 
@@ -70,6 +83,7 @@ class _QuizPageState extends State<QuizPage> {
               child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
+                resetGame(); // Reset the game
               },
             ),
           ],
