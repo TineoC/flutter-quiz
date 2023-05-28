@@ -25,10 +25,9 @@ class QuizGame {
     final response = await http.get(url);
 
     if (response.statusCode != 200) {
-      // Error handling
+      // ignore: avoid_print
       print('Request failed with status: ${response.statusCode}.');
     }
-    print(response);
 
     // Successful API call
     final responseData = json.decode(response.body);
@@ -54,16 +53,24 @@ class QuizGame {
   }
 
   String getQuestion() {
+    if (isLastQuestion) {
+      return 'No more questions left';
+    }
+
     String question = _questions[_questionIndex].question;
     _questionIndex += 1;
     return question;
   }
 
   bool get getQuestionAnswer {
-    return _questions[_questionIndex].answer;
+    if (_questionIndex < _questions.length) {
+      return _questions[_questionIndex].answer;
+    }
+
+    return false; // or handle the invalid case accordingly
   }
 
   bool get isLastQuestion {
-    return _questions.length == _questionIndex - 1;
+    return _questions.length == _questionIndex;
   }
 }
