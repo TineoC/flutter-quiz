@@ -51,6 +51,7 @@ class _QuizPageState extends State<QuizPage> {
       });
     });
   }
+
   void checkAnswer(bool userAnswer) {
     bool answerIsCorrect = quiz.getQuestionAnswer == userAnswer;
 
@@ -89,24 +90,12 @@ class _QuizPageState extends State<QuizPage> {
           ],
         );
       },
-    ).then((_) {
-      // Reset the game by creating a new instance of QuizGame
-      quiz = QuizGame();
-      scoreIcons.clear(); // Clear the score icons
-
-      setState(() {
-        correctAnswersCount = 0; // Reset the correct answers count
-      });
-    });
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    initializeData();
-  }
-
-  void initializeData() async {
     quiz.initialize().then((value) {
       setState(() {
         isLoaded = true;
@@ -164,6 +153,7 @@ class _QuizPageState extends State<QuizPage> {
             child: TextButton(
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.green)),
+              onPressed: isLoaded ? () => checkAnswer(true) : null,
               child: const Text(
                 'Verdadero',
                 style: TextStyle(
@@ -171,9 +161,6 @@ class _QuizPageState extends State<QuizPage> {
                   fontSize: 20.0,
                 ),
               ),
-              onPressed: () {
-                checkAnswer(true);
-              },
             ),
           ),
         ),
@@ -183,6 +170,7 @@ class _QuizPageState extends State<QuizPage> {
             child: TextButton(
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red)),
+              onPressed: isLoaded ? () => checkAnswer(true) : null,
               child: const Text(
                 'Falso',
                 style: TextStyle(
@@ -190,9 +178,6 @@ class _QuizPageState extends State<QuizPage> {
                   color: Colors.white,
                 ),
               ),
-              onPressed: () {
-                checkAnswer(false);
-              },
             ),
           ),
         ),
